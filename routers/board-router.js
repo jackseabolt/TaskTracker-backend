@@ -89,7 +89,6 @@ router.delete('/:boardid/todo', jsonParser, jwtAuth, (req, res) => {
         }); 
 }); 
 
-
 // DELETE COMPLETE
 router.delete('/:boardid/completed', jsonParser, jwtAuth, (req, res) => {
     if(!req.body.value) {
@@ -108,7 +107,6 @@ router.delete('/:boardid/completed', jsonParser, jwtAuth, (req, res) => {
         }); 
 }); 
 
-
 // DELETE BOARD
 router.delete('/:boardid', jsonParser, jwtAuth, (req, res) => {
     Board 
@@ -124,7 +122,6 @@ router.delete('/:boardid', jsonParser, jwtAuth, (req, res) => {
             res.status(500).json({ message: "There was a problem"}); 
         }); 
 }); 
-
 
 // ADMIN - GET ALL BOARDS
 router.get('/', (req, res) => {
