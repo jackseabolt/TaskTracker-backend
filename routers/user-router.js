@@ -2,24 +2,33 @@
 
 const express = require('express'); 
 const { User, Board, ToDo, Completed } = require('../models');
+const bcrypt = require('bcryptjs')
 const router = express.Router();
 const bodyParser = require('body-parser'); 
 const jsonParser = bodyParser.json()  
 
 // CREATE USER
 router.post('/', jsonParser, (req, res) => {
-    return User
-        .create({
-            username: req.body.username, 
-            password: req.body.password
-        })
-        .then(user => {
-            res.status(201).json({ user })
+    return bcrypt.hash(req.body.password, 10)
+        .then(hash => {
+            return User
+            .create({
+                username: req.body.username, 
+                password: hash
+            })
+            .then(user => {
+                res.status(201).json({ user })
+            })
+            .catch(err => {
+                console.log(err)
+                res.sendStatus(500); 
+            })
         })
         .catch(err => {
-            console.log(err)
-            res.sendStatus(500); 
+            console.error(err);
+            res.status(500).json({ message: 'There was a problem'}); 
         })
+    
 });
 
 // GET USER DATA
@@ -44,7 +53,9 @@ router.get('/:userId', jsonParser, (req, res) => {
             if(!user) {
                 return res.status(404).json({ message: 'Invalid user id'}); 
             }
-            res.status(200).json({ user })
+            let result = user.apiRepr(); 
+            result.boards = user.boards
+            res.status(200).json( result ); 
         })
         .catch(err => {
             res.status(500).json({ message: 'There was a problem'})
@@ -156,7 +167,14 @@ router.get('/', (req, res) => {
             }
         ]
         })
-        .then(users => res.status(200).json(users))
+        .then(users => {
+            let result = users.map(user => {
+                let item = user.apiRepr(); 
+                item.boards = user.boards;
+                return item; 
+            })
+            res.status(200).json(result)
+        })
         .catch(err => {
             console.log(err); 
             res.sendStatus(500); 

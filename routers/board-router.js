@@ -2,12 +2,12 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser'); 
 const jsonParser = bodyParser.json() 
-const { Board, ToDo, Completed } = require('../models'); 
-
+const { Board, ToDo, Completed } = require('../models');
+const passport = require('passport');
+const jwtAuth = passport.authenticate('jwt', { session: false }) 
 
 // CREATE NEW BOARD
-router.post('/', jsonParser, (req, res) => {
-    // authentication needed
+router.post('/', jsonParser, jwtAuth, (req, res) => {
     return Board
         .create({ 
             name: req.body.name, 
@@ -23,8 +23,7 @@ router.post('/', jsonParser, (req, res) => {
 }); 
 
 // CREATE NEW TODO
-router.post('/:boardid', jsonParser, (req, res) => {
-    // authentication neeeded
+router.post('/:boardid', jsonParser, jwtAuth, (req, res) => {
     if(!req.body.value) {
         return res.status(404).json({ message: 'Must provide value'}); 
     }
@@ -48,8 +47,7 @@ router.post('/:boardid', jsonParser, (req, res) => {
 }); 
 
 // MOVE TODO TO COMPLETE 
-router.post('/:boardid/todo', jsonParser, (req, res) => {
-    // authentication neeeded
+router.post('/:boardid/todo', jsonParser, jwtAuth, (req, res) => {
     if(!req.body.value) {
         return res.status(404).json({ message: 'Must provide value'}); 
     }  
@@ -74,8 +72,7 @@ router.post('/:boardid/todo', jsonParser, (req, res) => {
 }); 
 
 // DELETE TODO
-router.delete('/:boardid/todo', jsonParser, (req, res) => {
-    // authentication neeeded
+router.delete('/:boardid/todo', jsonParser, jwtAuth, (req, res) => {
     if(!req.body.value) {
         return res.status(404).json({ message: 'Must provide value'}); 
     }
@@ -94,8 +91,7 @@ router.delete('/:boardid/todo', jsonParser, (req, res) => {
 
 
 // DELETE COMPLETE
-router.delete('/:boardid/completed', jsonParser, (req, res) => {
-    // authentication neeeded
+router.delete('/:boardid/completed', jsonParser, jwtAuth, (req, res) => {
     if(!req.body.value) {
         return res.status(404).json({ message: 'Must provide value'}); 
     }
@@ -114,8 +110,7 @@ router.delete('/:boardid/completed', jsonParser, (req, res) => {
 
 
 // DELETE BOARD
-router.delete('/:boardid', jsonParser, (req, res) => {
-    console.log("BOARDID", req.params.boardid)
+router.delete('/:boardid', jsonParser, jwtAuth, (req, res) => {
     Board 
         .destroy({ where: { id: req.params.boardid }})
         .then(response => {
