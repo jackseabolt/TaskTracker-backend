@@ -31,6 +31,22 @@ Board.associate = function(models) {
             onDelete: 'CASCADE'
         }
     )
+    Board.hasMany(
+        models.Completed, 
+        {
+            as: 'completed', 
+            foreignKey: { allowNull: false }, 
+            onDelete: 'CASCADE'
+        }
+    )
+    Board.hasMany(
+        models.ToDo, 
+        {
+            as: 'todos', 
+            foreignKey: { allowNull: false }, 
+            onDelete: 'CASCADE'
+        }
+    )
 }
 
 module.exports = {
