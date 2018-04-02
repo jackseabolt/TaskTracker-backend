@@ -6,5 +6,6 @@ module.exports = {
     PORT: process.env.PORT || 8080, 
     SEQUELIZE_OPTIONS: {logging: env === 'test' ? false : console.log}, 
     JWT_SECRET: process.env.JWT_SECRET, 
-    JWT_EXPIRY: '7d'
+    JWT_EXPIRY: '7d', 
+    CLIENT_ORIGIN: process.env.CLIENT_ORIGIN || 'http://localhost:3000' ||'http://localhost:3000/demo' , 
 }
