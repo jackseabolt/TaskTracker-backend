@@ -5,7 +5,9 @@ const { User, Board, ToDo, Completed } = require('../models');
 const bcrypt = require('bcryptjs')
 const router = express.Router();
 const bodyParser = require('body-parser'); 
-const jsonParser = bodyParser.json()  
+const jsonParser = bodyParser.json() 
+const passport = require('passport');
+const jwtAuth = passport.authenticate('jwt', { session: false });  
 
 // CREATE USER
 router.post('/', jsonParser, (req, res) => {
@@ -32,7 +34,7 @@ router.post('/', jsonParser, (req, res) => {
 });
 
 // GET USER DATA
-router.get('/:userId', jsonParser, (req, res) => {
+router.get('/:userId', jsonParser, jwtAuth, (req, res) => {
     return User
         .find({ where: { id: req.params.userId}, 
             include: [{
@@ -63,7 +65,7 @@ router.get('/:userId', jsonParser, (req, res) => {
 }); 
 
 // DELETE A USER
-router.delete('/:userId', jsonParser, (req, res) => {
+router.delete('/:userId', jsonParser, jwtAuth, (req, res) => {
     return User
         .destroy({ where: { id: req.params.userId }})
         .then(response => {
@@ -79,7 +81,7 @@ router.delete('/:userId', jsonParser, (req, res) => {
 }); 
 
 // UPDATE A USER
-router.put('/:userId', jsonParser, (req, res) => {
+router.put('/:userId', jsonParser, jwtAuth,  (req, res) => {
     if(req.body.username && req.body.password ) {
         return User
             .update(
@@ -150,7 +152,7 @@ router.put('/:userId', jsonParser, (req, res) => {
 }); 
 
 // ADMIN - GET ALL USERS
-router.get('/', (req, res) => {
+router.get('/', jwtAuth, (req, res) => {
     return User
         .findAll({
             include: [{

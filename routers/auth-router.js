@@ -25,6 +25,7 @@ router.post('/login', localAuth, (req, res) => {
 });
 
 router.post('/refresh', jwtAuth, (req, res) => {
+  console.log("IT GOT IN HERE")
   const authToken = createAuthToken(req.user);
   res.json({ authToken });
 });

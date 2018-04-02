@@ -8,13 +8,14 @@ const jwtAuth = passport.authenticate('jwt', { session: false })
 
 // CREATE NEW BOARD
 router.post('/', jsonParser, jwtAuth, (req, res) => {
+    console.log(`IN ACTION: ${req.body.name}${req.body.user_id}`)
     return Board
         .create({ 
             name: req.body.name, 
             user_id: req.body.user_id 
         })
         .then(board => {
-            res.sendStatus(201).json({ board })
+            res.status(201).json({ board })
         })
         .catch(err => {
             console.log(err)
@@ -52,7 +53,7 @@ router.post('/:boardid/todo', jsonParser, jwtAuth, (req, res) => {
         return res.status(404).json({ message: 'Must provide value'}); 
     }  
     ToDo
-        .destroy({ where: { board_id: req.params.boardid }})
+        .destroy({ where: { board_id: req.params.boardid, value: req.body.value }})
         .then(todos => {
             if(!todos) {
                 return res.status(404).json({ message: 'Value does not exist'});                 
@@ -89,7 +90,6 @@ router.delete('/:boardid/todo', jsonParser, jwtAuth, (req, res) => {
         }); 
 }); 
 
-
 // DELETE COMPLETE
 router.delete('/:boardid/completed', jsonParser, jwtAuth, (req, res) => {
     if(!req.body.value) {
@@ -108,7 +108,6 @@ router.delete('/:boardid/completed', jsonParser, jwtAuth, (req, res) => {
         }); 
 }); 
 
-
 // DELETE BOARD
 router.delete('/:boardid', jsonParser, jwtAuth, (req, res) => {
     Board 
@@ -124,7 +123,6 @@ router.delete('/:boardid', jsonParser, jwtAuth, (req, res) => {
             res.status(500).json({ message: "There was a problem"}); 
         }); 
 }); 
-
 
 // ADMIN - GET ALL BOARDS
 router.get('/', (req, res) => {
