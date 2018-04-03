@@ -16,7 +16,7 @@ app.use(
     cors({
       origin: CLIENT_ORIGIN
     })
-  ); 
+); 
 
 app.use(morgan('common')); 
 app.use('/auth', authRouter);
