@@ -2,7 +2,7 @@ require('dotenv').config();
 const env = process.env.NODE_ENV || 'development'; 
 
 module.exports = {
-    DATABASE_URL: 'postgres://coxaffrf:7Dli2nfv3MbIojjet7iXTuzq30RxpyUf@stampy.db.elephantsql.com:5432/coxaffrf', 
+    DATABASE_URL: process.env.DATABASE_URL, 
     PORT: process.env.PORT || 8080, 
     SEQUELIZE_OPTIONS: {logging: env === 'test' ? false : console.log}, 
     JWT_SECRET: process.env.JWT_SECRET, 
